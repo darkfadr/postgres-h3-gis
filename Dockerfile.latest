@@ -3,24 +3,13 @@ FROM postgres:latest
 MAINTAINER darkfadr <ash@narcisse.dev>
 
 # Install OpenSSL and sudo
-RUN apt-get update && apt-get install -y openssl sudo
+RUN apt-get update && apt-get install -y openssl sudo make cmake \
+    git gcc py-pip musl-dev
+
+RUN pipi install pgxnclient
 
 # Allow the postgres user to execute certain commands as root without a password
 RUN echo "postgres ALL=(root) NOPASSWD: /usr/bin/mkdir, /bin/chown" > /etc/sudoers.d/postgres
-
-# Install Uber H3 dependencies
-
-# Install pg extensions client
-RUN apk add --update \
-    git \
-    gcc \
-    make \
-    cmake \
-    py-pip \
-    musl-dev \
-
-    && pip install pgxnclient \
-    && rm -rf /var/cache/apk/*
 
 # install H3, GIS
 RUN pgxn install h3
