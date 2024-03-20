@@ -1,19 +1,13 @@
-FROM postgres:latest
+FROM kartoza/postgis:16-3.4
 
 MAINTAINER darkfadr <ash@narcisse.dev>
 
 # Install OpenSSL and sudo
-RUN apt-get update && apt-get install -y openssl sudo make cmake \
-    git gcc py-pip musl-dev
-
-RUN pipi install pgxnclient
+RUN apt-get update && apt-get install -y openssl sudo
 
 # Allow the postgres user to execute certain commands as root without a password
 RUN echo "postgres ALL=(root) NOPASSWD: /usr/bin/mkdir, /bin/chown" > /etc/sudoers.d/postgres
 
-# install H3, GIS
-RUN pgxn install h3
-RUN pgxn insall postgis                               
 
 # Add init scripts
 COPY init-ssl.sh /docker-entrypoint-initdb.d/
@@ -22,6 +16,12 @@ COPY wrapper.sh /usr/local/bin/wrapper.sh
 # Set permissions
 RUN chmod +x /docker-entrypoint-initdb.d/init-ssl.sh
 RUN chmod +x /usr/local/bin/wrapper.sh
+
+ENV FORCE_SSL=TRUE
+ENV SSL_DIR="/var/lib/postgresql/data/certs"
+ENV SSL_CERT_FILE='/etc/ssl_certificates/server.crt'
+ENV SSL_KEY_FILE='/etc/ssl_certificates/server.key'
+ENV SSL_CA_FILE='/etc/ssl_certificates/root.crt'
 
 ENTRYPOINT ["wrapper.sh"]
 CMD ["postgres", "--port=5432"]
