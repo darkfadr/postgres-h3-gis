@@ -3,9 +3,9 @@ name: Docker Image CI/CD for latest
 on:
   workflow_dispatch:
   push:
-  	branches:
-	    - 'main'
-	    - 'releases/**'
+    branches:
+      - "main"
+      - "releases/**"
 
 jobs:
   build:
