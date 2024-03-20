@@ -3,6 +3,7 @@
 `ghcr.io/darkfadr/railway-postgis:latest`
 
 This repository contains the logic to build SSL-enabled Postgres images.
+GIS features are provided by: https://github.com/kartoza/docker-postgis
 
 By default, when you deploy Postgres from the offical Postgres template on Railway, the image that is used is built from this repository!
 
